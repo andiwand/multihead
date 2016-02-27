@@ -34,9 +34,9 @@ public class DeviceDescriptor {
 
 	public DeviceDescriptor(int vendor, int product) {
 		if ((vendor < VENDOR_MIN) | (vendor > VENDOR_MAX))
-			throw new IllegalArgumentException("vendor not in range");
+			throw new IllegalArgumentException("vendor not in definition");
 		if ((product < PRODUCT_MIN) | (product > PRODUCT_MAX))
-			throw new IllegalArgumentException("vendor not in range");
+			throw new IllegalArgumentException("product not in definition");
 
 		this.vendor = vendor;
 		this.product = product;

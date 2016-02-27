@@ -23,15 +23,17 @@ public class PciPath {
 	private static final int RADIX = 16;
 	private static final int RANGE_MIN = 0;
 	private static final int RANGE_MAX = 1;
-	private static final int[][] RANGES = { { DOMAIN_MIN, DOMAIN_MAX }, { BUS_MIN, BUS_MAX }, { SLOT_MIN, SLOT_MAX },
+	private static final int[][] RANGES = { { DOMAIN_MIN, DOMAIN_MAX },
+			{ BUS_MIN, BUS_MAX }, { SLOT_MIN, SLOT_MAX },
 			{ FUNCTION_MIN, FUNCTION_MAX } };
 	private static final int INDEX_DOMAIN = 0;
 	private static final int INDEX_BUS = 1;
 	private static final int INDEX_SLOT = 2;
 	private static final int INDEX_FUNCTION = 3;
 	private static final Pattern PATTERN = Pattern
-			.compile("([0-9a-fA-F]{4})(?:\\:([0-9a-fA-F]{2})(?:\\:([0-9a-fA-F]{2})(?:\\.([0-9a-fA-F]))?)?)?");
-	private static final String[] FORMAT = { "", "%04x", "%04x:%02x", "%04x:%02x:%02x", "%04x:%02x:%02x.%01x" };
+			.compile("(?:([0-9a-fA-F]{4})(?:\\:([0-9a-fA-F]{2})(?:\\:([0-9a-fA-F]{2})(?:\\.([0-9a-fA-F]))?)?)?)?");
+	private static final String[] FORMAT = { "", "%04x", "%04x:%02x",
+			"%04x:%02x:%02x", "%04x:%02x:%02x.%01x" };
 
 	public static PciPath parse(String path) {
 		Matcher matcher = PATTERN.matcher(path);
@@ -87,7 +89,8 @@ public class PciPath {
 			throw new IllegalArgumentException("path too long");
 		this.path = new int[length];
 		for (int i = 0; i < length; i++) {
-			if ((path[offset + i] < RANGES[i][RANGE_MIN]) | (path[offset + i] > RANGES[i][RANGE_MAX]))
+			if ((path[offset + i] < RANGES[i][RANGE_MIN])
+					| (path[offset + i] > RANGES[i][RANGE_MAX]))
 				throw new IllegalArgumentException("number out of definition");
 			this.path[i] = path[offset + i];
 		}
@@ -145,12 +148,12 @@ public class PciPath {
 
 	public PciPath parent() {
 		if (this.path.length == 0)
-			throw new IllegalStateException("root has no parent");
+			return null;
 		return new PciPath(this.path, 0, this.path.length - 1);
 	}
 
 	public boolean parentOf(PciPath other) {
-		if (this.getLength() <= other.getLength())
+		if (this.path.length >= other.path.length)
 			return false;
 		for (int i = 0; i < this.path.length; i++) {
 			if (this.path[i] != other.path[i])
@@ -162,7 +165,7 @@ public class PciPath {
 	public boolean siblingOf(PciPath other) {
 		if (this.path.length == 0)
 			throw new IllegalStateException("root has no sibling");
-		if (this.getLength() != other.getLength())
+		if (this.path.length != other.path.length)
 			return false;
 		for (int i = 0; i < this.path.length - 1; i++) {
 			if (this.path[i] != other.path[i])
