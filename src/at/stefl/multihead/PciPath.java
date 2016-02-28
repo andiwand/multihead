@@ -23,8 +23,7 @@ public class PciPath {
 	private static final int RADIX = 16;
 	private static final int RANGE_MIN = 0;
 	private static final int RANGE_MAX = 1;
-	private static final int[][] RANGES = { { DOMAIN_MIN, DOMAIN_MAX },
-			{ BUS_MIN, BUS_MAX }, { SLOT_MIN, SLOT_MAX },
+	private static final int[][] RANGES = { { DOMAIN_MIN, DOMAIN_MAX }, { BUS_MIN, BUS_MAX }, { SLOT_MIN, SLOT_MAX },
 			{ FUNCTION_MIN, FUNCTION_MAX } };
 	private static final int INDEX_DOMAIN = 0;
 	private static final int INDEX_BUS = 1;
@@ -32,8 +31,7 @@ public class PciPath {
 	private static final int INDEX_FUNCTION = 3;
 	private static final Pattern PATTERN = Pattern
 			.compile("(?:([0-9a-fA-F]{4})(?:\\:([0-9a-fA-F]{2})(?:\\:([0-9a-fA-F]{2})(?:\\.([0-9a-fA-F]))?)?)?)?");
-	private static final String[] FORMAT = { "", "%04x", "%04x:%02x",
-			"%04x:%02x:%02x", "%04x:%02x:%02x.%01x" };
+	private static final String[] FORMAT = { "", "%04x", "%04x:%02x", "%04x:%02x:%02x", "%04x:%02x:%02x.%01x" };
 
 	public static PciPath parse(String path) {
 		Matcher matcher = PATTERN.matcher(path);
@@ -89,8 +87,7 @@ public class PciPath {
 			throw new IllegalArgumentException("path too long");
 		this.path = new int[length];
 		for (int i = 0; i < length; i++) {
-			if ((path[offset + i] < RANGES[i][RANGE_MIN])
-					| (path[offset + i] > RANGES[i][RANGE_MAX]))
+			if ((path[offset + i] < RANGES[i][RANGE_MIN]) | (path[offset + i] > RANGES[i][RANGE_MAX]))
 				throw new IllegalArgumentException("number out of definition");
 			this.path[i] = path[offset + i];
 		}
@@ -98,7 +95,8 @@ public class PciPath {
 
 	@Override
 	public String toString() {
-		return String.format(FORMAT[this.path.length], this.path);
+		Object[] args = Arrays.stream(this.path).boxed().toArray(Integer[]::new);
+		return String.format(FORMAT[this.path.length], args);
 	}
 
 	@Override
@@ -144,6 +142,10 @@ public class PciPath {
 		if (this.path.length <= INDEX_FUNCTION)
 			return NONE;
 		return this.path[INDEX_FUNCTION];
+	}
+
+	public boolean isLeave() {
+		return this.path.length == LENGTH_MAX;
 	}
 
 	public PciPath parent() {

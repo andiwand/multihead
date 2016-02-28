@@ -17,7 +17,7 @@ public class UsbPath {
 
 	private static final int INDEX_BUS = 0;
 	private static final Pattern PATTERN = Pattern
-			.compile("(\\d+)\\-((?:(?:\\d+)\\.)+(?:\\d+))\\:(\\d+)\\.(\\d+)");
+			.compile("(?:(\\d+)(?:\\-((?:(?:\\d+)\\.)*(?:\\d+))(?:\\:(\\d+)\\.(\\d+))?)?)?");
 
 	public static UsbPath parse(String path) {
 		Matcher matcher = PATTERN.matcher(path);
