@@ -23,7 +23,7 @@ public class DeviceDescriptor {
 	public static DeviceDescriptor parse(String descriptor) {
 		Matcher matcher = PATTERN.matcher(descriptor);
 		if (!matcher.matches())
-			throw new IllegalArgumentException("not matching");
+			return null;
 		int[] nums = new int[LENGTH];
 		for (int i = 0; i < nums.length; i++) {
 			String group = matcher.group(i + 1);

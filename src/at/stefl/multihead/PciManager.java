@@ -13,6 +13,8 @@ public class PciManager {
 	private static final Path DEVICES_PATH = Paths.get("/sys/bus/pci/devices");
 	private static final String FILE_VENDOR = "vendor";
 	private static final String FILE_DEVICE = "device";
+	private static final String FILE_SUBVENDOR = "subsystem_vendor";
+	private static final String FILE_SUBDEVICE = "subsystem_device";
 
 	private final Map<PciPath, PciDevice> devices;
 
@@ -35,9 +37,15 @@ public class PciManager {
 
 		int vendor = Integer.decode(new String(Files.readAllBytes(path.resolve(FILE_VENDOR))).trim());
 		int device = Integer.decode(new String(Files.readAllBytes(path.resolve(FILE_DEVICE))).trim());
-		DeviceDescriptor deviceDescriptor = new DeviceDescriptor(vendor, device);
+		DeviceDescriptor descriptor = new DeviceDescriptor(vendor, device);
 
-		return new PciDevice(pciPath, deviceDescriptor);
+		vendor = Integer.decode(new String(Files.readAllBytes(path.resolve(FILE_SUBVENDOR))).trim());
+		device = Integer.decode(new String(Files.readAllBytes(path.resolve(FILE_SUBDEVICE))).trim());
+		DeviceDescriptor subsystemDescriptor = new DeviceDescriptor(vendor, device);
+
+		String name = String.join(" ", PciNameService.find(descriptor, subsystemDescriptor));
+
+		return new PciDevice(pciPath, descriptor, subsystemDescriptor, name);
 	}
 
 }

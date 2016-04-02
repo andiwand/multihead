@@ -22,7 +22,7 @@ public class UsbPath {
 	public static UsbPath parse(String path) {
 		Matcher matcher = PATTERN.matcher(path);
 		if (!matcher.matches())
-			throw new IllegalArgumentException("not matching");
+			return null;
 		if (matcher.group(1) == null)
 			return ROOT;
 		int bus = Integer.parseInt(matcher.group(1));

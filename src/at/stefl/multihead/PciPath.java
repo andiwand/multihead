@@ -36,7 +36,7 @@ public class PciPath {
 	public static PciPath parse(String path) {
 		Matcher matcher = PATTERN.matcher(path);
 		if (!matcher.matches())
-			throw new IllegalArgumentException("not matching");
+			return null;
 		int[] nums = new int[LENGTH_MAX];
 		int length = LENGTH_MAX;
 		for (int i = 0; i < nums.length; i++) {
