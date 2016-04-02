@@ -1,6 +1,6 @@
 package at.stefl.multihead;
 
-public class UsbBusDescriptor {
+public class UsbBusDeviceDescriptor {
 
 	public static final int BUS_MIN = 0;
 	public static final int DEVICE_MIN = 0;
@@ -10,7 +10,7 @@ public class UsbBusDescriptor {
 	private final int bus;
 	private final int device;
 
-	public UsbBusDescriptor(int bus, int device) {
+	public UsbBusDeviceDescriptor(int bus, int device) {
 		if (bus < BUS_MIN)
 			throw new IllegalArgumentException("bus not in definition");
 		if (device < DEVICE_MIN)
@@ -50,7 +50,7 @@ public class UsbBusDescriptor {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UsbBusDescriptor other = (UsbBusDescriptor) obj;
+		UsbBusDeviceDescriptor other = (UsbBusDeviceDescriptor) obj;
 		if (this.bus != other.bus)
 			return false;
 		if (this.device != other.device)
