@@ -36,6 +36,34 @@ public class DeviceClass {
 		return builder.toString();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.clazz;
+		result = prime * result + this.interfaze;
+		result = prime * result + this.subclass;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DeviceClass other = (DeviceClass) obj;
+		if (this.clazz != other.clazz)
+			return false;
+		if (this.interfaze != other.interfaze)
+			return false;
+		if (this.subclass != other.subclass)
+			return false;
+		return true;
+	}
+
 	public int getClazz() {
 		return this.clazz & 0xff;
 	}
