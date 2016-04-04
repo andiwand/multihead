@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 
 // TODO: reduce redundancy with PciNameService 
 // TODO: support device class (bottom of the hwdata file)
@@ -64,7 +66,7 @@ public class UsbNameService {
 		return line.substring(offset);
 	}
 
-	public static String[] find(int... id) {
+	public static List<String> find(int... id) {
 		if (id.length <= 0)
 			throw new IllegalArgumentException("descriptor.length <= 0");
 		if (id.length == 3)
@@ -72,16 +74,16 @@ public class UsbNameService {
 		if (id.length > 4)
 			throw new IllegalArgumentException("descriptor.length > 4");
 
-		String[] result = new String[id.length];
+		List<String> result = new LinkedList<>();
 
 		try {
 			BufferedReader in = stream();
 
-			for (int i = 0; i < result.length; i++) {
+			for (int i = 0; i < id.length; i++) {
 				String line = find(in, i, id[i]);
 				if (line == null)
-					return null;
-				result[i] = extract(line, i);
+					break;
+				result.add(extract(line, i));
 			}
 		} catch (IOException e) {
 			throw new IllegalStateException("io exception", e);

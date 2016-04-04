@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 
 // TODO: reduce redundancy with UsbNameService
 // TODO: support device class (bottom of the hwdata file)
@@ -71,13 +73,13 @@ public class PciNameService {
 	private static String extract(String line, int intentation) {
 		int offset = INTENTATION[intentation].length() + ID_LENGTH;
 		if (intentation == 2)
-			offset += ID_SEPARATOR.length();
+			offset += ID_SEPARATOR.length() + ID_LENGTH;
 		offset += NAME_SEPARATOR.length();
 
 		return line.substring(offset);
 	}
 
-	public static String[] find(int... id) {
+	public static List<String> find(int... id) {
 		if (id.length <= 0)
 			throw new IllegalArgumentException("descriptor.length <= 0");
 		if (id.length == 3)
@@ -85,20 +87,16 @@ public class PciNameService {
 		if (id.length > 4)
 			throw new IllegalArgumentException("descriptor.length > 4");
 
-		String[] result = null;
-		if (id.length == 4)
-			result = new String[3];
-		else
-			result = new String[id.length];
+		List<String> result = new LinkedList<>();
 
 		try {
 			BufferedReader in = stream();
 
-			for (int i = 0; i < result.length; i++) {
+			for (int i = 0; i < id.length; i++) {
 				String line = find(in, i, id[i], (i == 2) ? id[i + 1] : -1);
 				if (line == null)
-					return null;
-				result[i] = extract(line, i);
+					break;
+				result.add(extract(line, i));
 			}
 		} catch (IOException e) {
 			throw new IllegalStateException("io exception", e);
@@ -107,7 +105,7 @@ public class PciNameService {
 		return result;
 	}
 
-	public static String[] find(DeviceDescriptor device, DeviceDescriptor subsystem) {
+	public static List<String> find(DeviceDescriptor device, DeviceDescriptor subsystem) {
 		if (device == null)
 			return null;
 		if (subsystem == null)

@@ -15,11 +15,16 @@ public class PciManager {
 	private static final String FILE_DEVICE = "device";
 	private static final String FILE_SUBVENDOR = "subsystem_vendor";
 	private static final String FILE_SUBDEVICE = "subsystem_device";
+	private static final String FILE_CLASS = "class";
 
 	private final Map<PciPath, PciDevice> devices;
 
 	public PciManager() {
 		this.devices = new HashMap<>();
+	}
+
+	public Map<PciPath, PciDevice> getDevices() {
+		return devices;
 	}
 
 	public void fetch() throws IOException {
@@ -43,9 +48,12 @@ public class PciManager {
 		device = Integer.decode(new String(Files.readAllBytes(path.resolve(FILE_SUBDEVICE))).trim());
 		DeviceDescriptor subsystemDescriptor = new DeviceDescriptor(vendor, device);
 
+		int deviceClassNum = Integer.decode(new String(Files.readAllBytes(path.resolve(FILE_CLASS))).trim());
+		DeviceClass deviceClass = new DeviceClass(deviceClassNum);
+
 		String name = String.join(" ", PciNameService.find(descriptor, subsystemDescriptor));
 
-		return new PciDevice(pciPath, descriptor, subsystemDescriptor, name);
+		return new PciDevice(pciPath, descriptor, subsystemDescriptor, deviceClass, name);
 	}
 
 }
